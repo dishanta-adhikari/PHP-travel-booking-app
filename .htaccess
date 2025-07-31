@@ -1,0 +1,47 @@
+RewriteEngine On
+RewriteBase /PHP-travel-booking-app
+
+# Allow real files and directories to pass through
+RewriteCond %{REQUEST_FILENAME} -f [OR]
+RewriteCond %{REQUEST_FILENAME} -d
+RewriteRule ^ - [L]
+
+# ============================
+# Custom Routes (Specific First)
+# ============================
+
+#RewriteRule ^artwork/([0-9]+)/?$ src/views/artwork/index.php?id=$1 [L,QSA]
+
+# /admin/artwork/create/123
+#RewriteRule ^admin/artwork/create/?([0-9]*)$ src/views/admin/artwork/create.php?id=$1 [L,QSA]
+
+# ============================
+# Auth routes (login, register, etc.)
+# ============================
+RewriteRule ^(login|register|logout|forgot-password|reset-password|hasPhone|verify|verify-institution)/?$ src/views/auth/$1.php [NC,L]
+
+# ============================
+# Generic routes: Try views/{path}.php
+# ============================
+
+# src/views/{path}.php
+RewriteCond %{DOCUMENT_ROOT}/PHP-travel-booking-app/src/views/$1.php -f
+RewriteRule ^([a-zA-Z0-9/_-]+)$ src/views/$1.php [NC,L]
+
+# src/views/{path}/index.php
+RewriteCond %{DOCUMENT_ROOT}/PHP-travel-booking-app/src/views/$1/index.php -f
+RewriteRule ^([a-zA-Z0-9/_-]+)$ src/views/$1/index.php [NC,L]
+
+# Optional .html routes
+RewriteCond %{DOCUMENT_ROOT}/PHP-travel-booking-app/src/views/$1.html -f
+RewriteRule ^([a-zA-Z0-9/_-]+)\.html$ src/views/$1.html [NC,L]
+
+# Redirect root with trailing slash to no slash
+RewriteCond %{THE_REQUEST} ^[A-Z]{3,}\s/+PHP-travel-booking-app/+\s [NC]
+RewriteRule ^$ /PHP-travel-booking-app [R=301,L]
+
+
+# ============================
+# Final fallback for 404
+# ============================
+#RewriteRule ^.*$ src/views/errors/404.php [L]
