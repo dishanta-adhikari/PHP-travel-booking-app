@@ -60,7 +60,7 @@ class RegisterController
 
             session_regenerate_id(true);
 
-            $_SESSION['user_id'] = $created['id'];
+            $_SESSION['user_id'] = $created['user_id'];
             $_SESSION['user_name'] = $created['name'];
             $_SESSION['user_email'] = $created['email'];
             $_SESSION['role'] = $created['role'];

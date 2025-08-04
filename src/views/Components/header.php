@@ -100,19 +100,20 @@ if ($role === 'admin') {
 
 <!-- Sticky Header HTML -->
 <header class="travel-header d-flex justify-content-between align-items-center">
-
-    <?php if (!empty($_SESSION['user_id']) && $role): ?>
-        <a href="<?= APP_URL . '/' . ($role === 'admin' ? 'admin/dashboard' : 'user/dashboard') ?>" class="site-title">✈️ TravelBook</a>
-    <?php else: ?>
-        <a href="<?= APP_URL ?>" class="site-title">✈️ TravelBook</a>
-    <?php endif; ?>
-
-    <div class="d-flex align-items-center right-content">
-        <div class="user-info me-2">
-            User: <?= htmlspecialchars($userName) ?>
-        </div>
-        <?php if ($role): ?>
-            <a href="<?= APP_URL ?>/logout" class="btn btn-light text-dark btn-logout">Logout</a>
+    <div class="container d-flex flex-wrap justify-content-between">
+        <?php if (!empty($_SESSION['user_id']) && $role): ?>
+            <a href="<?= APP_URL . '/' . ($role === 'admin' ? 'admin/dashboard' : 'user/dashboard') ?>" class="site-title">✈️ TravelBook</a>
+        <?php else: ?>
+            <a href="<?= APP_URL ?>" class="site-title">✈️ TravelBook</a>
         <?php endif; ?>
+
+        <div class="d-flex align-items-center right-content">
+            <div class="user-info me-2">
+                User: <?= htmlspecialchars($userName) ?>
+            </div>
+            <?php if ($role): ?>
+                <a href="<?= APP_URL ?>/logout" class="btn btn-light text-dark btn-logout">Logout</a>
+            <?php endif; ?>
+        </div>
     </div>
 </header>

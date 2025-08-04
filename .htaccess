@@ -10,15 +10,16 @@ RewriteRule ^ - [L]
 # Custom Routes (Specific First)
 # ============================
 
-#RewriteRule ^artwork/([0-9]+)/?$ src/views/artwork/index.php?id=$1 [L,QSA]
+# /user/booking/4 → src/views/user/booking/index.php?id=4
+RewriteRule ^user/booking/create/([0-9]+)$ src/views/user/booking/create.php?id=$1 [L,QSA]
 
-# /admin/artwork/create/123
-#RewriteRule ^admin/artwork/create/?([0-9]*)$ src/views/admin/artwork/create.php?id=$1 [L,QSA]
+RewriteRule ^user/booking/delete$ src/views/user/booking/delete.php [L,QSA]
+
 
 # ============================
 # Auth routes (login, register, etc.)
 # ============================
-RewriteRule ^(login|register|logout|forgot-password|reset-password|hasPhone|verify|verify-institution)/?$ src/views/auth/$1.php [NC,L]
+RewriteRule ^(login|register|logout|update-password)/?$ src/views/auth/$1.php [NC,L]
 
 # ============================
 # Generic routes: Try views/{path}.php

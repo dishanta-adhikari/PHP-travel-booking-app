@@ -18,4 +18,9 @@ class PackageController
     {
         return $this->Package->getAll();
     }
+
+    public function getById($id)
+    {
+        return $this->Package->getById($id);
+    }
 }

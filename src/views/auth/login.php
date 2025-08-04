@@ -13,6 +13,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST['submit'])) {
     $login = new LoginController($con);
     $login->login($_POST);
 }
+
 ?>
 
 <!DOCTYPE html>

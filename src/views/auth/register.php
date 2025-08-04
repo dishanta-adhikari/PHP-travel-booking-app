@@ -108,22 +108,25 @@ if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST['submit'])) {
                         <form method="POST" action="">
                             <div class="mb-3">
                                 <label class="form-label">Full Name</label>
-                                <input name="name" class="form-control" required>
+                                <input name="name" class="form-control"
+                                    value="<?= htmlspecialchars($_POST['name'] ?? '') ?>" required>
                             </div>
 
                             <div class="mb-3">
                                 <label class="form-label">Email</label>
-                                <input name="email" type="email" class="form-control" required>
+                                <input name="email" type="email" class="form-control"
+                                    value="<?= htmlspecialchars($_POST['email'] ?? '') ?>" required>
                             </div>
 
                             <div class="mb-3">
                                 <label class="form-label">Phone</label>
-                                <input name="phone" class="form-control">
+                                <input name="phone" class="form-control"
+                                    value="<?= htmlspecialchars($_POST['phone'] ?? '') ?>">
                             </div>
 
                             <div class="mb-3">
                                 <label class="form-label">Address</label>
-                                <textarea name="address" class="form-control"></textarea>
+                                <textarea name="address" class="form-control"><?= htmlspecialchars($_POST['address'] ?? '') ?></textarea>
                             </div>
 
                             <div class="mb-3">
@@ -133,6 +136,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST['submit'])) {
 
                             <button type="submit" name="submit" class="btn btn-primary w-100">Register</button>
                         </form>
+
 
                         <p class="text-center mt-3">
                             Already have an account? <a href="<?= APP_URL ?>/login" class="text-primary">Login here</a>

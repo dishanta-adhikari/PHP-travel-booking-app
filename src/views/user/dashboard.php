@@ -22,7 +22,7 @@ $bookings_result = $booking->getBookingsByUser($user_id);
 <html>
 
 <head>
-    <title>User Dashboard</title>
+    <title>Dashboard | User</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <style>
         body {
@@ -82,7 +82,7 @@ $bookings_result = $booking->getBookingsByUser($user_id);
                 </div>
                 <div class="col-md-4 text-md-end mt-3 mt-md-0">
                     <a href="<?= APP_URL ?>/user/profile/update" class="btn btn-outline-light btn-sm me-2">Edit Profile</a>
-                    <a href="<?= APP_URL ?>/change-password" class="btn btn-outline-light btn-sm me-2">Change Password</a>
+                    <a href="<?= APP_URL ?>/update-password" class="btn btn-outline-light btn-sm me-2">Update Password</a>
                 </div>
             </div>
         </div>
@@ -118,7 +118,7 @@ $bookings_result = $booking->getBookingsByUser($user_id);
                             <td><?= htmlspecialchars($row['name']) ?></td>
                             <td>₹<?= number_format($row['price'], 2) ?></td>
                             <td><?= htmlspecialchars(mb_strimwidth($row['description'], 0, 50, "...")) ?></td>
-                            <td><a href='book?id=<?= $id ?>' class='btn btn-success btn-sm'>Book Now</a></td>
+                            <td><a href="<?= APP_URL ?>/user/booking/create/<?= $id ?>" class='btn btn-success btn-sm'>Book Now</a></td>
                             <td><button class="btn btn-info btn-sm" data-bs-toggle="modal" data-bs-target="#infoModal<?= $id ?>">Info</button></td>
                         </tr>
                         <?php
@@ -129,7 +129,8 @@ $bookings_result = $booking->getBookingsByUser($user_id);
                             $carouselIndicators = $carouselItems = '';
                             foreach ($images as $index => $img) {
                                 $active = $index === 0 ? 'active' : '';
-                                $safeImg = htmlspecialchars(trim($img));
+                                $basePath = APP_URL . '/public/';
+                                $safeImg = htmlspecialchars($basePath . trim($img));
                                 $carouselIndicators .= "<button type='button' data-bs-target='#$carouselId' data-bs-slide-to='$index' class='$active' aria-label='Slide $index'></button>";
                                 $carouselItems .= "<div class='carousel-item $active'><img src='$safeImg' class='d-block w-100 rounded' style='max-height: 500px; object-fit: cover;'></div>";
                             }
@@ -140,11 +141,27 @@ $bookings_result = $booking->getBookingsByUser($user_id);
                                 <button class='carousel-control-next' type='button' data-bs-target='#$carouselId' data-bs-slide='next'><span class='carousel-control-next-icon'></span></button>
                             </div>";
                         }
-                        $modals .= "<div class='modal fade' id='infoModal$id' tabindex='-1'><div class='modal-dialog modal-xl modal-dialog-centered'><div class='modal-content'>
-                            <div class='modal-header'><h5 class='modal-title'>{$row['name']} - ₹{$row['price']}</h5><button type='button' class='btn-close' data-bs-dismiss='modal'></button></div>
-                            <div class='modal-body row g-4'><div class='col-md-6'>$imageTag</div>
-                            <div class='col-md-6'><h6>Description:</h6><p>" . nl2br(htmlspecialchars($row['description'])) . "</p><hr><p><strong>Price:</strong> ₹" . number_format($row['price'], 2) . "</p><p><strong>Package ID:</strong> {$row['package_id']}</p><a href='book?id=$id' class='btn btn-primary mt-2'>Book Now</a></div>
-                            </div></div></div></div>";
+                        $modals .= "<div class='modal fade' id='infoModal$id' tabindex='-1'>
+                                    <div class='modal-dialog modal-xl modal-dialog-centered'>
+                                        <div class='modal-content'>
+                                        <div class='modal-header'>
+                                                <h5 class='modal-title'>{$row['name']} - ₹{$row['price']}</h5>
+                                                <button type='button' class='btn-close' data-bs-dismiss='modal'></button>
+                                            </div>
+                                            <div class='modal-body row g-4'>
+                                            <div class='col-md-6'>$imageTag</div>
+                                                <div class='col-md-6'>
+                                                    <h6>Description:</h6>
+                                                    <p>" . nl2br(htmlspecialchars($row['description'])) . "</p>
+                                                    <hr>
+                                                    <p><strong>Price:</strong> ₹" . number_format($row['price'], 2) . "</p>
+                                                <p><strong>Package ID:</strong> {$row['package_id']}</p>
+                                                    <a href='" . APP_URL . "/user/booking/create/{$id}' class='btn btn-primary mt-2'>Book Now</a>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>";
                         ?>
                     <?php endforeach; ?>
                 </tbody>
@@ -179,10 +196,11 @@ $bookings_result = $booking->getBookingsByUser($user_id);
                                 <?php endif; ?>
                             </td>
                             <td>
-                                <form method="POST" action="delete_booking" onsubmit="return confirm('Are you sure you want to cancel this booking?');">
+                                <form method="POST" action="<?= APP_URL ?>/user/booking/delete">
                                     <input type="hidden" name="booking_id" value="<?= $row['id'] ?>">
-                                    <button type="submit" class="btn btn-danger btn-sm">Cancel</button>
+                                    <button type="submit" class="btn btn-danger btn-sm">Cancel Booking</button>
                                 </form>
+
                             </td>
                         </tr>
                     <?php endforeach; ?>

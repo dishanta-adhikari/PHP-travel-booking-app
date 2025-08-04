@@ -24,7 +24,7 @@ class LoginController
                 throw new Exception("Required Fields are empty !");
             }
 
-            $email    = trim($_POST["email"]);
+            $email    = trim($values["email"]);
             $password = trim($values["password"]);
 
             $user = $this->User->getByEmail($email);
@@ -39,10 +39,10 @@ class LoginController
 
             session_regenerate_id(true);
 
-            $_SESSION['user_id'] = $user['id'];
-            $_SESSION['user_name'] = $user['name'];
+            $_SESSION['role']       = $user['role'];
+            $_SESSION['user_id']    = $user['id'];
+            $_SESSION['user_name']  = $user['name'];
             $_SESSION['user_email'] = $user['email'];
-            $_SESSION['role'] = $user['role'];
 
             $_SESSION['success'] = "Welcome " . $user['name'];
             header("Location: " . APP_URL . "/" . $user['role'] . "/dashboard");

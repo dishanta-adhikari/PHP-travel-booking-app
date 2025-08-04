@@ -44,4 +44,22 @@ class User
         }
         return false;
     }
+
+    public function update(array $values)
+    {
+        $stmt = $this->con->prepare("UPDATE customers SET name=?, email=?, phone=? WHERE id=?");
+        if ($stmt->execute([$values['name'], $values['email'], $values['phone'], $values['id']])) {
+            return true;
+        }
+        return false;
+    }
+
+    public function updatePassword(array $values)
+    {
+        $stmt = $this->con->prepare("UPDATE customers SET password = ? WHERE id = ?");
+        if ($stmt->execute([$values['password'], $values['id']])) {
+            return true;
+        }
+        return false;
+    }
 }

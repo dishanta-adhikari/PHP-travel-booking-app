@@ -1,43 +1,29 @@
 <?php
-include 'db.php';
-include 'includes/header.php';
+require_once __DIR__ . "/../../Components/header.php";
+require_once __DIR__ . "/../../Components/footer.php";
 
-if (!isset($_SESSION["user_id"])) {
-    header("Location: login");
-    exit();
-}
+use App\Middleware\SessionMiddleware;
+use App\Controllers\UserController;
+use App\Helpers\Flash;
+
+SessionMiddleware::validateUserSession();
 
 $user_id = $_SESSION["user_id"];
-$message = $error = "";
 
-// Update user info
-if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST["update"])) {
-    $name = trim($_POST["name"]);
-    $email = trim($_POST["email"]);
-    $phone = trim($_POST["phone"]);
+$userController = new UserController($con);
 
-    $stmt = mysqli_prepare($conn, "UPDATE customers SET name=?, email=?, phone=? WHERE id=?");
-    mysqli_stmt_bind_param($stmt, "sssi", $name, $email, $phone, $user_id);
-    if (mysqli_stmt_execute($stmt)) {
-        $message = "Profile updated successfully.";
-    } else {
-        $error = "Failed to update profile.";
-    }
+if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST["update"])) {
+    $userController->update($_POST);
 }
 
-// Fetch current data
-$stmt = mysqli_prepare($conn, "SELECT * FROM customers WHERE id=?");
-mysqli_stmt_bind_param($stmt, "i", $user_id);
-mysqli_stmt_execute($stmt);
-$result = mysqli_stmt_get_result($stmt);
-$user = mysqli_fetch_assoc($result);
+$user = $userController->getUserById($user_id);
 ?>
 
 <!DOCTYPE html>
 <html>
 
 <head>
-    <title>Edit Profile</title>
+    <title>Profile | Update</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <style>
         body {
@@ -61,11 +47,10 @@ $user = mysqli_fetch_assoc($result);
     <div class="container min-vh-100 d-flex justify-content-center align-items-center">
         <div class="card py-4 px-4 rounded w-100" style="max-width: 500px;">
             <div class="gradient-header">
-                <h3 class="mb-0">Edit Profile</h3>
+                <h3 class="mb-0">Profile | Edit</h3>
             </div>
 
-            <?php if ($message): ?><div class="alert alert-success"><?= $message ?></div><?php endif; ?>
-            <?php if ($error): ?><div class="alert alert-danger"><?= $error ?></div><?php endif; ?>
+            <?php Flash::render(); ?>
 
             <form method="POST">
                 <div class="mb-3">
@@ -80,8 +65,9 @@ $user = mysqli_fetch_assoc($result);
                     <label class="form-label">Phone</label>
                     <input type="text" name="phone" class="form-control" value="<?= htmlspecialchars($user['phone']) ?>" required>
                 </div>
+                <input type="hidden" name="user_id" value="<?= htmlspecialchars($user_id) ?>" required>
                 <div class="d-flex justify-content-between">
-                    <a href="dashboard" class="btn btn-secondary">Back</a>
+                    <a href="<?= APP_URL ?>/user/dashboard" class="btn btn-secondary">Back</a>
                     <button type="submit" name="update" class="btn btn-primary">Update</button>
                 </div>
             </form>
@@ -90,5 +76,3 @@ $user = mysqli_fetch_assoc($result);
 </body>
 
 </html>
-
-<?php include 'includes/footer.php'; ?>

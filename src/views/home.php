@@ -132,8 +132,8 @@ $unsplashImageUrl = "https://images.unsplash.com/photo-1507525428034-b723cf961d3
             <h1 class="hero-title">Start Your Adventure Today</h1>
             <p class="hero-subtitle">Discover the best places, packages, and hotels curated just for you.</p>
             <div class="hero-buttons">
-                <a href="register" class="btn btn-register">Register</a>
-                <a href="login" class="btn btn-login">Login</a>
+                <a href="<?= APP_URL ?>/register" class="btn btn-register">Register</a>
+                <a href="<?= APP_URL ?>/login" class="btn btn-login">Login</a>
             </div>
         </div>
     </section>

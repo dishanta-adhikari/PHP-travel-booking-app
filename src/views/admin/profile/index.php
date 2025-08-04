@@ -1,48 +1,30 @@
 <?php
-include 'db.php';
-include 'includes/header.php';
+require_once __DIR__ . "/../../Components/header.php";
+require_once __DIR__ . "/../../Components/footer.php";
 
-if (!isset($_SESSION['admin_id'])) {
-    header("Location: login");
-    exit();
-}
+use App\Controllers\AdminController;
+use App\Helpers\Flash;
+use App\Middleware\SessionMiddleware;
 
-$admin_id = $_SESSION['admin_id'];
-$message = "";
-$error = "";
+SessionMiddleware::validateAdminSession();
 
-// Update profile info
-if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['update_profile'])) {
-    $name = $_POST["name"];
-    $email = $_POST["email"];
+$admin_id = $_SESSION['user_id'];
+$controller = new AdminController($con);
 
-    $stmt = mysqli_prepare($conn, "UPDATE admins SET name = ?, email = ? WHERE id = ?");
-    mysqli_stmt_bind_param($stmt, "ssi", $name, $email, $admin_id);
-    if (mysqli_stmt_execute($stmt)) {
-        $message = "Profile updated successfully.";
-    } else {
-        $error = "Failed to update profile.";
+if ($_SERVER["REQUEST_METHOD"] == "POST") {
+    if (isset($_POST['update_profile'])) {
+        $success = $controller->updateProfile($admin_id, $_POST['name'], $_POST['email']);
+        $message = $success ? "Profile updated successfully." : "Failed to update profile.";
+    }
+
+    if (isset($_POST['change_password'])) {
+        $success = $controller->changePassword($admin_id, $_POST['old_password'], $_POST['new_password']);
+        $message = $success ? "Password changed successfully." : "";
+        $error = !$success ? "Old password is incorrect." : "";
     }
 }
 
-// Change password
-if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['change_password'])) {
-    $old = hash('sha256', $_POST["old_password"]);
-    $new = hash('sha256', $_POST["new_password"]);
-
-    $res = mysqli_query($conn, "SELECT password FROM admins WHERE id = $admin_id");
-    $row = mysqli_fetch_assoc($res);
-    if ($row && $row['password'] === $old) {
-        mysqli_query($conn, "UPDATE admins SET password = '$new' WHERE id = $admin_id");
-        $message = "Password changed successfully.";
-    } else {
-        $error = "Old password is incorrect.";
-    }
-}
-
-// Fetch admin details
-$res = mysqli_query($conn, "SELECT * FROM admins WHERE id = $admin_id");
-$admin = mysqli_fetch_assoc($res);
+$admin = $controller->showProfile($admin_id);
 ?>
 
 <!DOCTYPE html>
@@ -133,11 +115,7 @@ $admin = mysqli_fetch_assoc($res);
                 <h2 class="text-center mb-4 text-white">Admin Profile</h2>
             </div>
 
-            <?php if ($message): ?>
-                <div class="alert alert-success"><?= $message ?></div>
-            <?php elseif ($error): ?>
-                <div class="alert alert-danger"><?= $error ?></div>
-            <?php endif; ?>
+            <?php Flash::render(); ?>
 
             <!-- Update Profile -->
             <form method="POST" class="mb-4">
@@ -169,12 +147,10 @@ $admin = mysqli_fetch_assoc($res);
             </form>
 
             <div class="text-center mt-4">
-                <a href="admin" class="btn btn-link">← Back to Dashboard</a>
+                <a href="<?= APP_URL ?>/admin/dashboard" class="btn btn-link">← Back to Dashboard</a>
             </div>
         </div>
     </div>
-
-    <?php include 'includes/footer.php'; ?>
 </body>
 
 </html>

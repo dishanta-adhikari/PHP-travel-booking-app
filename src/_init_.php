@@ -1,5 +1,5 @@
 <?php
-require_once __DIR__ . '/config/Session.php';        // start the session
+require_once __DIR__ . '/Config/Session.php';        // start the session
 
 require_once __DIR__ . '/../vendor/autoload.php';    // composer autoload
 
